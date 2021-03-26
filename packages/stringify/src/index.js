@@ -1,38 +1,41 @@
 import { toKebabCase } from './toCase.js'
 import { getResolvedSelectors } from './getResolvedSelectors.js'
 
-/** Comma matcher outside rounded brackets. */
-const comma = /\s*,\s*(?![^()]*\))/
+var functionStringifier = Function.call.bind(Function.toString)
+
+var { isArray } = Array
+
+var array = (knob, data) => (knob && isArray(data) ? data : [data])
+var split = (name) => (name.includes(',') ? name.split(/\s*,\s*(?![^()]*\))/) : [name])
 
 /** Returns a string of CSS from an object of CSS. */
-export const stringify = (
+export var stringify = (
 	/** Object representing the current CSS. */
 	value,
-	/** ... */
+	/** Replacer function. */
 	replacer = undefined,
 ) => {
 	/** Set used to manage the opened and closed state of rules. */
-	const used = new WeakSet()
+	var used = new WeakSet()
 
-	const parse = (style, selectors, conditions, prevName, prevData) => {
-		let cssText = ''
+	var parse = (style, selectors, conditions, prevName, prevData) => {
+		var cssText = ''
 
-		each: for (let name in style) {
-			const isAtRuleLike = name.charCodeAt(0) === 64
+		each: for (var name in style) {
+			var isAtRuleLike = name.charCodeAt(0) === 64
 
-			for (const data of isAtRuleLike ? [].concat(style[name]) : [style[name]]) {
-				if (typeof replacer === 'function' && (name !== prevName || data !== prevData)) {
-					const next = replacer(name, data, style)
+			for (var data of array(isAtRuleLike, style[name])) {
+				if (replacer && (name !== prevName || data !== prevData)) {
+					var next = replacer(name, data, style)
 
 					if (next !== null) {
-						cssText += next === Object(next) ? parse(next, selectors, conditions, name, data) : next == null ? '' : next
+						cssText += typeof next === 'object' && next ? parse(next, selectors, conditions, name, data) : next == null ? '' : next
 
 						continue each
 					}
 				}
 
-				const isAtRuleLike = name.charCodeAt(0) === 64
-				const isObjectLike = data === Object(data) && !('length' in data)
+				var isObjectLike = typeof data === 'object' && data && data.length === undefined
 
 				if (isObjectLike) {
 					if (used.has(selectors)) {
@@ -41,11 +44,11 @@ export const stringify = (
 						cssText += '}'
 					}
 
-					const usedName = Object(name)
+					var usedName = Object(name)
 
-					const nextSelectors = isAtRuleLike ? selectors : selectors.length ? getResolvedSelectors(selectors, name.split(comma)) : name.split(comma)
+					var nextSelectors = isAtRuleLike ? selectors : selectors.length ? getResolvedSelectors(selectors, split(name)) : split(name)
 
-					cssText += parse(data, nextSelectors, isAtRuleLike ? conditions.concat(usedName) : conditions)
+					cssText += parse(data, nextSelectors, isAtRuleLike ? conditions.concat(usedName) : conditions, undefined, undefined)
 
 					if (used.has(usedName)) {
 						used.delete(usedName)
@@ -57,7 +60,7 @@ export const stringify = (
 						cssText += '}'
 					}
 				} else {
-					for (let i = 0; i < conditions.length; ++i) {
+					for (var i = 0; i < conditions.length; ++i) {
 						if (!used.has(conditions[i])) {
 							used.add(conditions[i])
 
@@ -71,7 +74,7 @@ export const stringify = (
 						cssText += selectors + '{'
 					}
 
-					for (const each of /^@import/i.test(name) ? [].concat(data) : [data]) {
+					for (var each of array(name === '@import', data)) {
 						cssText += (isAtRuleLike ? name + ' ' : toKebabCase(name) + ':') + String(each) + ';'
 					}
 				}
@@ -81,5 +84,5 @@ export const stringify = (
 		return cssText
 	}
 
-	return parse(value, [], [])
+	return parse(value, [], [], undefined, undefined)
 }

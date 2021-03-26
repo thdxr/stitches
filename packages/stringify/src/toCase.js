@@ -10,4 +10,4 @@ export const toKebabCase = (/** @type {string} */ value) => (
 )
 
 /** Returns the given value converted to camel-case. */
-export const toCamelCase = (/** @type {string} */ value) => (!/[A-Z]/.test(value) ? value.replace(/-[^]/g, (capital) => capital[1].toUpperCase()) : value)
+export const toCamelCase = (/** @type {string} */ value) => (/[A-Z]/.test(value) ? value : value.replace(/-./g, (letter) => letter[1].toUpperCase()))
