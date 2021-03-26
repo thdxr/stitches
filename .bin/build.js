@@ -120,6 +120,9 @@ if (isProcessMeta(import.meta)) {
 				`--watch packages/react/src`,
 				`--watch packages/react/tests`,
 				`--watch packages/react/types`,
+				`--watch packages/stringify/src`,
+				`--watch packages/stringify/tests`,
+				`--watch packages/stringify/types`,
 
 				// exec
 				`--exec "${['node', './.bin/build.js', ...onlyArgs].join(' ')}"`,
