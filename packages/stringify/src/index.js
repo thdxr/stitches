@@ -3,8 +3,10 @@ import { getResolvedSelectors } from './getResolvedSelectors.js'
 
 var functionStringifier = Function.call.bind(Function.toString)
 
+var { create } = Object
 var { isArray } = Array
 
+var cache = create(null)
 var array = (knob, data) => (knob && isArray(data) ? data : [data])
 var split = (name) => (name.includes(',') ? name.split(/\s*,\s*(?![^()]*\))/) : [name])
 
@@ -15,6 +17,17 @@ export var stringify = (
 	/** Replacer function. */
 	replacer = undefined,
 ) => {
+	var key1 = replacer ? functionStringifier(replacer) : ''
+	var key2 = JSON.stringify(value)
+
+	if (key1 in cache) {
+		if (key2 in cache[key1]) {
+			return cache[key1][key2]
+		}
+	} else {
+		cache[key1] = create(null)
+	}
+
 	/** Set used to manage the opened and closed state of rules. */
 	var used = new WeakSet()
 
@@ -84,5 +97,5 @@ export var stringify = (
 		return cssText
 	}
 
-	return parse(value, [], [], undefined, undefined)
+	return (cache[key1][key2] = parse(value, [], [], undefined, undefined))
 }
