@@ -1,5 +1,3 @@
-// prettier-ignore
-
 /** Returns the given value converted to kebab-case. */
 export var toKebabCase = (/** @type {string} */ value) => (
 	// ignore kebab-like values

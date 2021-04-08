@@ -1,7 +1,8 @@
 var { stringify } = JSON
 var { create } = Object
 
-export function useMemo() {
+/** Returns a memoizer. */
+export var createMemo = () => {
 	var memo = create(null)
 
 	return /** @type {<D,T>(data: D, make: (data?: D, json?: string) => T) => T} */ ((data, make) => {

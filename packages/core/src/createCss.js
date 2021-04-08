@@ -1,11 +1,11 @@
-import { useMemo } from '../../shared/useMemo.js'
+import { createMemo } from '../../shared/createMemo.js'
 import { Text, document } from '../../shared/dom.js'
 import { hash } from '../../shared/hash.js'
 import { stringify } from './stringify.js'
 import { toSelector } from '../../shared/toSelector.js'
 
 var { assign } = Object
-var globalMemo = useMemo()
+var globalMemo = createMemo()
 var defaultProps = {}
 var $$composers = Symbol.for('sxs.composers')
 
@@ -65,7 +65,7 @@ function initInstance(/** @type {Config} */ config) {
 		])
 	})
 
-	var memo = useMemo()
+	var memo = createMemo()
 
 	// prettier-ignore
 	return {
