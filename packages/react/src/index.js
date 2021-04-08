@@ -1,10 +1,11 @@
-import { assign } from '../../core/src/Object.js'
 import { createCss as createCoreCss } from '../../core/src/index.js'
 import defaultThemeMap from '../../core/src/defaultThemeMap.js'
-import { $$composers } from '../../core/src/Symbol.js'
 
-const $$typeofElement = Symbol.for('react.element')
-const $$typeofForward = Symbol.for('react.forward_ref')
+export var $$composers = Symbol.for('sxs.composers')
+export var $$typeofElement = Symbol.for('react.element')
+export var $$typeofForward = Symbol.for('react.forward_ref')
+
+var { assign } = Object
 
 const createCss = (init) => {
 	const sheet = createCoreCss(init)

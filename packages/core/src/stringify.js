@@ -1,33 +1,19 @@
 import { toKebabCase } from '../../shared/toKebabCase.js'
-import { getResolvedSelectors } from './getResolvedSelectors.js'
+import { getResolvedSelectors } from '../../stringify/src/getResolvedSelectors.js'
 
-var functionStringifier = Function.call.bind(Function.toString)
-
-var { stringify: asJson } = JSON
-var { create } = Object
 var { isArray } = Array
-var cache = create(null)
+var { prototype, toString: fToString } = Object
+var { toString: oToString } = prototype
+
 var array = (knob, data) => (knob && isArray(data) ? data : [data])
 var split = (name) => (name.includes(',') ? name.split(/\s*,\s*(?![^()]*\))/) : [name])
 
-/** Returns a string of CSS from an object of CSS. */
 export function stringify(
 	/** Object representing the current CSS. */
 	value,
 	/** Replacer function. */
 	replacer = undefined,
 ) {
-	var key1 = replacer ? functionStringifier(replacer) : ''
-	var key2 = asJson(value)
-
-	if (key1 in cache) {
-		if (key2 in cache[key1]) {
-			return cache[key1][key2]
-		}
-	} else {
-		cache[key1] = create(null)
-	}
-
 	/** Set used to manage the opened and closed state of rules. */
 	var used = new WeakSet()
 
@@ -42,15 +28,35 @@ export function stringify(
 					var next = replacer(name, data, style)
 
 					if (next !== null) {
-						cssText += typeof next === 'object' && next ? parse(next, selectors, conditions, name, data) : next == null ? '' : next
+						// prettier-ignore
+						cssText += (
+							next == null
+								? ''
+							: (
+								typeof next === 'function'
+									? next.toString === fToString
+								: typeof next === 'object'
+									? next.toString === oToString
+								: false
+							)
+								? parse(next, selectors, conditions, name, data)
+							: next
+						)
 
 						continue each
 					}
 				}
 
-				var isObjectLike = typeof data === 'object' && data && data.length === undefined
-
-				if (isObjectLike) {
+				// prettier-ignore
+				if (
+					data === null
+						? false
+					: typeof data === 'function'
+						? data.toString === fToString
+					: typeof data === 'object'
+						? data.toString === oToString
+					: false
+				) {
 					if (used.has(selectors)) {
 						used.delete(selectors)
 
@@ -87,9 +93,7 @@ export function stringify(
 						cssText += selectors + '{'
 					}
 
-					for (var each of array(name === '@import', data)) {
-						cssText += (isAtRuleLike ? name + ' ' : toKebabCase(name) + ':') + String(each) + ';'
-					}
+					cssText += (isAtRuleLike ? name + ' ' : toKebabCase(name) + ':') + String(data) + ';'
 				}
 			}
 		}
@@ -97,5 +101,5 @@ export function stringify(
 		return cssText
 	}
 
-	return (cache[key1][key2] = parse(value, [], [], undefined, undefined))
+	return parse(value, [], [], undefined, undefined)
 }
