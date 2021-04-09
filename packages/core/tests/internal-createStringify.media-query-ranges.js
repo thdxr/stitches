@@ -22,7 +22,6 @@ describe('stringify() media query ranges', () => {
 				},
 			}),
 		).toEqual(
-			// prettier-ignore
 			'@media (max-width:639.9375px){' +
 				'body{' +
 					'margin:0;' +
@@ -65,7 +64,6 @@ describe('stringify() media query ranges', () => {
 				},
 			}),
 		).toEqual(
-			// prettier-ignore
 			'@media (min-width:640.0625px){' +
 				'body{' +
 					'margin:0;' +
@@ -108,7 +106,6 @@ describe('stringify() media query ranges', () => {
 				},
 			}),
 		).toEqual(
-			// prettier-ignore
 			'@media (min-width:640.0625px) and (max-width:1023.9375px){' +
 				'body{' +
 					'margin:0;' +
@@ -151,7 +148,6 @@ describe('stringify() media query ranges', () => {
 				},
 			}),
 		).toEqual(
-			// prettier-ignore
 			'@media (min-width:640.0625px) and (max-width:1024px){' +
 				'body{' +
 					'margin:0;' +
@@ -188,7 +184,6 @@ describe('stringify() media query ranges', () => {
 				},
 			}),
 		).toEqual(
-			// prettier-ignore
 			'@media (width:640px){' +
 				'body{' +
 					'margin:0;' +

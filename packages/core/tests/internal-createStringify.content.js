@@ -16,7 +16,6 @@ describe('stringify() content declaration', () => {
 				},
 			}),
 		).toEqual(
-			// prettier-ignore
 			'q::before{' +
 				'content:"«";' +
 			'}' +

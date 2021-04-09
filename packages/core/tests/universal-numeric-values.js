@@ -87,7 +87,6 @@ describe('Numeric Values', () => {
 				},
 			})()
 
-			// prettier-ignore
 			expect(toString()).toBe(
 				'div' + '{' +
 					'animation-iteration-count:' + i + ';' +
@@ -126,29 +125,4 @@ describe('Numeric Values', () => {
 			)
 		}
 	})
-
-	// const commonProps = 'fontSize margin marginTop marginRight marginBottom marginLeft padding paddingTop paddingRight paddingBottom paddingLeft'.split(' ')
-
-	// for (const prop of commonProps) {
-	// 	const kebabProp = prop.replace(/[A-Z]/g, (letter) => '-' + letter.toLowerCase())
-
-	// 	test(`Author can use the unit-only ${kebabProp} property`, () => {
-	// 		for (let i = 0; i <= 33; i += 11) {
-	// 			const { global, toString } = createCss()
-
-	// 			global({
-	// 				div: {
-	// 					[prop]: i,
-	// 				},
-	// 			})()
-
-	// 			expect(toString()).toBe(
-	// 				// prettier-ignore
-	// 				'div' + '{' +
-	// 					kebabProp + ':' + i + (i ? 'px' : '') + ';' +
-	// 				'}',
-	// 			)
-	// 		}
-	// 	})
-	// }
 })

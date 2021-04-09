@@ -1,9 +1,9 @@
 import { toKebabCase } from '../../shared/toKebabCase.js'
 import { getResolvedSelectors } from './getResolvedSelectors.js'
+import { stringify as asJson } from '../../shared/JSON.js'
 
 var functionStringifier = Function.call.bind(Function.toString)
 
-var { stringify: asJson } = JSON
 var { create } = Object
 var { isArray } = Array
 var cache = create(null)

@@ -1,10 +1,10 @@
 import { createMemo } from '../../shared/createMemo.js'
 import { Text, document } from '../../shared/dom.js'
 import { hash } from '../../shared/hash.js'
-import { stringify } from './stringify.js'
-import { toSelector } from '../../shared/toSelector.js'
+import { stringify } from '../../stringify/src/stringify.js'
+import { toClassSelector } from '../../shared/toClassSelector.js'
+import { assign } from '../../shared/Object.js'
 
-var { assign } = Object
 var globalMemo = createMemo()
 var defaultProps = {}
 var $$composers = Symbol.for('sxs.composers')
@@ -67,7 +67,6 @@ function initInstance(/** @type {Config} */ config) {
 
 	var memo = createMemo()
 
-	// prettier-ignore
 	return {
 		config,
 		flush() {
@@ -133,13 +132,19 @@ function initInstance(/** @type {Config} */ config) {
 
 				props = typeof props === 'object' && props || defaultProps
 
-				composers(props, {}, importNode, globalNode, stylesNode, variesNode, inlineNode, cssContent)
+				for (var composer of composers) {
+					if (!composer.isConnected) {
+						stylesNode.appendChild(composer)
+
+						cssContent.styles += composer.data
+					}
+				}
 
 				var rendering = new String(className)
 
 				rendering.className = className
 				rendering.props = props
-				rendering.selector = toSelector(className)
+				rendering.selector = toClassSelector(className)
 
 				return rendering
 			}
@@ -175,13 +180,9 @@ function createComposers(/** @type {Memo} */ memo, /** @type {any[]} */ inits, /
 		}
 	}
 
-	return /** @type {[string, (props) => void]} */ ([
+	return /** @type {[string, Text[]]} */ ([
 		name,
-		(...args) => {
-			for (var composer of composers) {
-				composer(...args)
-			}
-		},
+		composers,
 	])
 }
 
@@ -192,30 +193,21 @@ function createComposer(/** @type {Memo} */ memo, init, /** @type {Config} */ co
 	void compoundVariants
 	void defaultVariants
 
-	var [className, defaultText] = memo(style, (style, json) => {
+	var [className, node] = memo(style, (style, json) => {
 		var className = config.prefix + hash(json)
 
 		return /** @type {[String, Text]} */ ([
 			className,
 			new Text(
 				stringify({
-					[toSelector(className)]: style,
+					[toClassSelector(className)]: style,
 				}),
 			),
 		])
 	})
 
-	return /** @type {[string, (props, forwardProps) => void]} */ ([
+	return /** @type {[string, Text]} */ ([
 		className,
-		function composer(props, forwardProps, importNode, globalNode, stylesNode, variesNode, inlineNode, cssContent) {
-			// ...
-			console.log({ props, forwardProps })
-
-			if (!defaultText.isConnected) {
-				stylesNode.appendChild(defaultText)
-
-				cssContent.global += defaultText.data
-			}
-		},
+		node,
 	])
 }

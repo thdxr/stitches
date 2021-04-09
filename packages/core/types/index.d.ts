@@ -265,7 +265,6 @@ export type LessInternalCSS<
 	} = CSSPropertiesToTokenScale
 > = FlatInternalCSS<Medias, Theme, Utils, ThemeMap>
 
-// prettier-ignore
 export type FlatInternalCSS<
 	Medias extends TMedias = TMedias,
 	Theme extends TTheme = TTheme,
@@ -392,7 +391,6 @@ export interface TStyledSheet<
 	css: {
 		<Vars extends any[]>(
 			...styles: {
-				// prettier-ignore
 				[k in keyof Vars]: (
 					(
 						(

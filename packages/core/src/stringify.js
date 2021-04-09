@@ -1,7 +1,7 @@
 import { toKebabCase } from '../../shared/toKebabCase.js'
 import { getResolvedSelectors } from '../../stringify/src/getResolvedSelectors.js'
+import { isArray } from '../../shared/Array.js'
 
-var { isArray } = Array
 var { prototype, toString: fToString } = Object
 var { toString: oToString } = prototype
 
@@ -28,7 +28,6 @@ export function stringify(
 					var next = replacer(name, data, style)
 
 					if (next !== null) {
-						// prettier-ignore
 						cssText += (
 							next == null
 								? ''
@@ -47,7 +46,6 @@ export function stringify(
 					}
 				}
 
-				// prettier-ignore
 				if (
 					data === null
 						? false

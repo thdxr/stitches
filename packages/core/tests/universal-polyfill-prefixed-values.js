@@ -10,7 +10,6 @@ describe('Polyfill prefixed values', () => {
 			},
 		})()
 
-		// prettier-ignore
 		expect(toString()).toBe(
 			'.gro{width:-moz-available;width:-webkit-fill-available;}'
 		)
@@ -25,7 +24,6 @@ describe('Polyfill prefixed values', () => {
 			},
 		})()
 
-		// prettier-ignore
 		expect(toString()).toBe(
 			'.fit{width:-moz-fit-content;width:fit-content;}'
 		)
