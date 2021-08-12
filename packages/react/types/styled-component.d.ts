@@ -14,7 +14,7 @@ export interface StyledComponent<
 		Type extends React.ElementType
 			? React.ComponentPropsWithRef<Type>
 		: never,
-		TransformedProps & { as?: Type } & { css?: CSS }
+		TransformedProps & { css?: CSS }
 	>
 > {
 	<As = Type>(
